@@ -8,13 +8,20 @@ This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute
 Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
 
 ```{r}
+#Load required package
+#install.packages("ggplot2")
+library(ggplot2)
+```
+
+```{r}
 rawData <- read.csv("data/train.csv", stringsAsFactors = FALSE)
 #Check the integrity of the data
 data_info = dim(rawData)
 for (col_id in 1:data_info[[2]]){
-  if (sum(complete.cases(rawData[[col_id]])) != data_info[[1]])
+  if (sum(complete.cases(rawData[[col_id]])) != data_info[[1]]){
     warn_msg = sprintf("Not complete column id: %d", col_id) 
     print(warn_msg)
+  }
 }
 ```
 
@@ -23,12 +30,13 @@ Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by press
 When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
 
 ```{r}
-library(ggplot2)
 m <- ggplot(rawData, aes(x = y), main = "Boxplot of Test Bench Time")
 #Draw the test bench time Box Plot
 summary(rawData$y)
 m +  geom_histogram(aes(y = ..density.. ), col=I("black"), fill=I("blue"), binwidth = 2) + geom_density(col=I("red"))+labs(y = "Density", x = "Time(s)")
 
+```
+```{r}
 #Draw the scatter plot for all char type column
 for(col_id in 3:data_info[[2]]){
   if(typeof(rawData[[col_id]])=="character"){
