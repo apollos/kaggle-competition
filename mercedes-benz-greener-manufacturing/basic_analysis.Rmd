@@ -10,7 +10,9 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 ```{r}
 #Load required package
 #install.packages("ggplot2")
+#install.packages("ggfortify")
 library(ggplot2)
+library(ggfortify)
 ```
 
 ```{r}
@@ -60,7 +62,7 @@ for(col_id in features_start:data_info[[2]]){
 ```
 ```{r}
 matrix_data <- rawData
-colnames(matrix_data) <- NULL
+#colnames(matrix_data) <- NULL
 features_matrix <- matrix_data[, -1]
 label_vector <- matrix_data[, 1]
 matrix_info <- dim(features_matrix)
@@ -68,7 +70,10 @@ features_matrix <- matrix(as.numeric(unlist(features_matrix)), nrow = matrix_inf
 svd_rst = svd(features_matrix)
 pca_rst = prcomp(features_matrix)
 plot(pca_rst, type = "l")
+autoplot(pca_rst)
+
 plot(svd_rst$d^2/sum(svd_rst$d^2), xlim = c(0, 30), type = "l", pch = 16, xlab = "principal components", ylab = "variance explained")
+
 ```
 
 
