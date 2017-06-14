@@ -49,8 +49,20 @@ m +  geom_histogram(aes(y = ..density.. ), col=I("black"), fill=I("blue"), binwi
 #Draw the scatter plot for all char type column
 features_start = 2
 labels_idx = 1
+useless_column = c()
 for(col_id in features_start:data_info[[2]]){
-  if(typeof(rawData[[col_id]])=="character"){
+  if (typeof(rawData[[col_id]])=="integer"){#Try to understand all column value distribution
+    summary_value = summary(rawData[[col_id]])
+    if(is.na(summary_value[6])){
+      print(column_names[[col_id]])
+      useless_column <- c(useless_column, col_id)
+    }
+    if((summary_value[4] == summary_value[6]) || (summary_value[1] == summary_value[6])){
+      print(column_names[[col_id]])
+      print(summary_value)
+      useless_column <- c(useless_column, col_id)
+    }
+  }else if(typeof(rawData[[col_id]])=="character"){
     #Factor the column
     rawData[[col_id]] <- factor(rawData[[col_id]])
     print(m+geom_point(aes(x = rawData[[col_id]], y = rawData[[labels_idx]], colour = abs(rnorm(data_info[[1]]))))+
@@ -58,12 +70,13 @@ for(col_id in features_start:data_info[[2]]){
       labs(y = "Test Bench Time(s)", x = column_names[[col_id]]))
   }
 }
+#print(useless_column )
 
 ```
 ```{r}
 matrix_data <- rawData
 #colnames(matrix_data) <- NULL
-features_matrix <- matrix_data[, -1]
+features_matrix <- matrix_data[ -c(1, useless_column)]
 label_vector <- matrix_data[, 1]
 matrix_info <- dim(features_matrix)
 features_matrix <- matrix(as.numeric(unlist(features_matrix)), nrow = matrix_info[1], ncol = matrix_info[2])
